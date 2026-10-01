@@ -76,12 +76,26 @@ app.use(cookieParser());
 // HEALTH CHECK
 // --------------------------------------------------
 
-app.get("/healthz", (req, res) => {
-  res.status(200).json({
-    statusCode: 200,
-    success: true,
-    message: "Backend is healthy",
-  });
+app.get("/healthz", async (req, res) => {
+  try {
+    const connection = await connectDB();
+
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: "Backend and MongoDB are healthy",
+      database: connection.readyState === 1 ? "connected" : "not connected",
+    });
+  } catch (error) {
+    console.error("Health check MongoDB error:", error);
+
+    res.status(503).json({
+      statusCode: 503,
+      success: false,
+      message: "MongoDB connection failed",
+      error: error.message,
+    });
+  }
 });
 
 // --------------------------------------------------
