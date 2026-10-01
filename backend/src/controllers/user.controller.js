@@ -5,10 +5,10 @@ import User from '../models/user.model.js'
 import jwt from 'jsonwebtoken'
 import config from '../config/config.js'
 
-const options = {
-    secure: process.env.NODE_ENV === "production" || config.cookieSameSite === "none",
-    httpOnly: true,
-    sameSite: config.cookieSameSite,
+const cookieOptions = {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
 }
 
 const generateAccessAndRefreshToken = async (userId) => {
