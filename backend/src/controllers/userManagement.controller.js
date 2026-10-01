@@ -6,9 +6,9 @@ import uploadOnCloudinary, { deleteFromCloudinary } from '../utils/uploadOnCloud
 import config from '../config/config.js'
 
 const cookieOptions = {
-    secure: process.env.NODE_ENV === "production" || config.cookieSameSite === "none",
-    httpOnly: true,
-    sameSite: config.cookieSameSite,
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
 }
 
 const updateProfile = asyncHandler(async (req, res) => {
