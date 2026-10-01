@@ -95,8 +95,8 @@ const login = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
         .json(
             new ApiResponse(
                 200,
@@ -111,8 +111,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const incomingRefreshToken = req.cookies?.refreshToken
     if (!incomingRefreshToken) {
         return res
-            .clearCookie("accessToken", options)
-            .clearCookie("refreshToken", options)
+            .clearCookie("accessToken", cookieOptions)
+            .clearCookie("refreshToken", cookieOptions)
             .status(401)
             .json(new ApiResponse(401, null, "Refresh token required"))
     }
@@ -122,8 +122,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         decodedToken = jwt.verify(incomingRefreshToken, config.refreshTokenSecret)
     } catch {
         return res
-            .clearCookie("accessToken", options)
-            .clearCookie("refreshToken", options)
+            .clearCookie("accessToken", cookieOptions)
+            .clearCookie("refreshToken", cookieOptions)
             .status(401)
             .json(new ApiResponse(401, null, "Invalid refresh token"))
     }
@@ -131,8 +131,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     const user = await User.findById(decodedToken?._id)
     if (!user || user.refreshToken !== incomingRefreshToken) {
         return res
-            .clearCookie("accessToken", options)
-            .clearCookie("refreshToken", options)
+            .clearCookie("accessToken", cookieOptions)
+            .clearCookie("refreshToken", cookieOptions)
             .status(401)
             .json(new ApiResponse(401, null, "Invalid refresh token"))
     }
@@ -143,8 +143,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false })
 
     return res
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", accessToken, cookieOptions)
+        .cookie("refreshToken", refreshToken, cookieOptions)
         .status(200)
         .json(new ApiResponse(200, user, "Session refreshed successfully"))
 })
@@ -163,8 +163,8 @@ const logout = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .clearCookie("accessToken", options)
-        .clearCookie("refreshToken", options)
+        .clearCookie("accessToken", cookieOptions)
+        .clearCookie("refreshToken", cookieOptions)
         .json(
             new ApiResponse(200, {}, "User logged out successfully")
         )
